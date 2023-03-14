@@ -3,7 +3,7 @@ CFLAGS = -g -Wall
 LDLIBS = -L./lib_wrapper -lfunc
 
 .PHONY: all
-all: clean init_2 main libfunc
+all: clean libfunc main init_2
 
 .PHONY: clean
 clean:
