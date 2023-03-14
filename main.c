@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <math.h>
 #include "lib_input.h"
+
+int lib_func(struct lib_input *x);
 
 int main(void)
 {
