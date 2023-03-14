@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -Wall
-LDLIBS = -lm
+LDLIBS = -L./lib_wrapper -lfunc
 
 .PHONY: all
 all: clean init_2 main libfunc
