@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -Wall
-LDLIBS = -L./lib_wrapper -lfunc
+LDLIBS = /root/untrusted_lib_tester/lib_wrapper/libfunc.so
 
 .PHONY: all
 all: clean libfunc main init_2
@@ -15,8 +15,10 @@ init_2: init_2.o
 init_2.o: init_2.c
 
 main: main.o
+	$(CC) main.o -o main $(CFLAGS) $(LDLIBS)
 
 main.o: main.c
+	$(CC) -c main.c -o main.o $(CFLAGS) $(LDLIBS)
 
 libfunc:
 	cd lib_wrapper && $(MAKE) all
