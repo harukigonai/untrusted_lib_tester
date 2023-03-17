@@ -1,3 +1,4 @@
+#include <stdint.h>
 #define _GNU_SOURCE
 
 #include <stdio.h>
@@ -21,15 +22,15 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     populate_arg(args_addr, z);
     populate_ret(args_addr, ret);
 
-    printf("Addr of w %#lx\n", &w);
-    printf("Addr of ptr to struct %#lx\n", &x);
-    printf("Addr of struct %#lx\n", x);
-    printf("Addr of ptr to double %#lx\n", &x->d_ptr);
-    printf("Addr of double %#lx\n", x->d_ptr);
-    printf("Addr of ptr to int %#lx\n", &x->i_ptr);
-    printf("Addr of int %#lx\n", x->i_ptr);
-    printf("Addr of y %#lx\n", &y);
-    printf("Addr of z %#lx\n", &z);
+    printf("Addr of w %#lx\n", (uint64_t) &w);
+    printf("Addr of ptr to struct %#lx\n", (uint64_t) &x);
+    printf("Addr of struct %#lx\n", (uint64_t) x);
+    printf("Addr of ptr to double %#lx\n", (uint64_t) &x->d_ptr);
+    printf("Addr of double %#lx\n", (uint64_t) x->d_ptr);
+    printf("Addr of ptr to int %#lx\n", (uint64_t) &x->i_ptr);
+    printf("Addr of int %#lx\n", (uint64_t) x->i_ptr);
+    printf("Addr of y %#lx\n", (uint64_t) &y);
+    printf("Addr of z %#lx\n", (uint64_t) &z);
 
 
 	int i = 0;
@@ -115,11 +116,11 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
  
     args.arg_entity_index[0] = 0;
 
-    printf("Old i_addr: %#lx\n", x->i_ptr);
-    printf("Old d_addr: %#lx\n", x->d_ptr);
+    printf("Old i_addr: %#lx\n", (uint64_t) x->i_ptr);
+    printf("Old d_addr: %#lx\n", (uint64_t) x->d_ptr);
 
     // invoke syscall 888
-    struct lib_enter_args *new_args = syscall(888, args_addr);
+    struct lib_enter_args *new_args = (void *) syscall(888, args_addr);
 
     int num_args = new_args->num_args;
     struct lib_input *new_x = *((struct lib_input **)new_args->args[0]);
@@ -130,8 +131,8 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     double new_d = *new_d_ptr;
     float new_f = new_x->f;
 
-    printf("New i_addr: %#lx\n", new_x->i_ptr);
-    printf("New d addr: %#lx\n", new_x->d_ptr);
+    printf("New i_addr: %#lx\n", (uint64_t) new_x->i_ptr);
+    printf("New d addr: %#lx\n", (uint64_t) new_x->d_ptr);
 
     printf("new_i is %d\n", new_i);
     printf("new_d is %f\n", new_d);
