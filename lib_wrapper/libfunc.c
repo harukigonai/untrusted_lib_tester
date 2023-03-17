@@ -120,7 +120,10 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     args.entity_metadata_size = i;
 	printf("We used %d slots in metadata\n", i);
  
-    args.arg_entity_index[0] = 0;
+	args.arg_entity_index[0] = 21;
+    args.arg_entity_index[1] = 0;
+	args.arg_entity_index[2] = 29;
+	args.arg_entity_index[3] = 37;
 
     printf("Old i_addr: %#lx\n", (uint64_t) x->i_ptr);
     printf("Old d_addr: %#lx\n", (uint64_t) x->d_ptr);
