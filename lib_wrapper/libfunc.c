@@ -7,7 +7,7 @@
 #include "arg_struct.h"
 #include "../lib_input.h"
 
-int lib_func(struct lib_input *x)
+int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 {
     printf("entering lib_func\n");
 
@@ -15,52 +15,102 @@ int lib_func(struct lib_input *x)
 
     struct lib_enter_args args = {0};
     struct lib_enter_args *args_addr = &args;
+    populate_arg(args_addr, w);
     populate_arg(args_addr, x);
+    populate_arg(args_addr, y);
+    populate_arg(args_addr, z);
     populate_ret(args_addr, ret);
 
+    printf("Addr of w %#lx\n", &w);
     printf("Addr of ptr to struct %#lx\n", &x);
     printf("Addr of struct %#lx\n", x);
     printf("Addr of ptr to double %#lx\n", &x->d_ptr);
     printf("Addr of double %#lx\n", x->d_ptr);
     printf("Addr of ptr to int %#lx\n", &x->i_ptr);
     printf("Addr of int %#lx\n", x->i_ptr);
+    printf("Addr of y %#lx\n", &y);
+    printf("Addr of z %#lx\n", &z);
 
+
+	int i = 0;
     // struct lib_input *
-    args.entity_metadata[0] = 1;
-    args.entity_metadata[1] = sizeof(struct lib_input *);
-    args.entity_metadata[2] = 1;
-    args.entity_metadata[3] = 5;
-    args.entity_metadata[4] = 0;
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = sizeof(struct lib_input *);
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = 5;
+    args.entity_metadata[i++] = 0;
 
-    args.entity_metadata[5] = 0;
-    args.entity_metadata[6] = sizeof(struct lib_input);
-    args.entity_metadata[7] = 2;
-    args.entity_metadata[8] = 12; // child 1 (int *) index
-    args.entity_metadata[9] = offsetof(struct lib_input, i_ptr); // child 1 (int *) offset;
-    args.entity_metadata[10] = 20; // child 2 (double *) index;
-    args.entity_metadata[11] = offsetof(struct lib_input, d_ptr); // child 2 (double *) offset;
+	// struct lib_input
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(struct lib_input);
+    args.entity_metadata[i++] = 4;
+    args.entity_metadata[i++] = 16; // child 1 (int *) index
+    args.entity_metadata[i++] = offsetof(struct lib_input, i_ptr); // child 1 (int *) offset;
+    args.entity_metadata[i++] = ; // child 2 (double *) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, d_ptr); // child 2 (double *) offset;
+    args.entity_metadata[i++] = ; // child 4 (struct sub_input) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, sub); // child 2 (double *) offset;
+    args.entity_metadata[i++] = ; // child 5 (struct sub_input) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, sub_ptr); // child 2 (double *) offset;
 
-    args.entity_metadata[12] = 1;
-    args.entity_metadata[13] = sizeof(int *);
-    args.entity_metadata[14] = 1;
-    args.entity_metadata[15] = 17; // child 1 (int)
-    args.entity_metadata[16] = 0;
+	// lib_input.i_ptr (int *)
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = sizeof(int *);
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = ; // child 1 (int)
+    args.entity_metadata[i++] = 0;
 
-    args.entity_metadata[17] = 0;
-    args.entity_metadata[18] = sizeof(int);
-    args.entity_metadata[19] = 0;
+	// *(lib_input.i_ptr)
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(int);
+    args.entity_metadata[i++] = 0;
     
-    args.entity_metadata[20] = 1;
-    args.entity_metadata[21] = sizeof(double *);
-    args.entity_metadata[22] = 1;
-    args.entity_metadata[23] = 25; // child 1 (double)
-    args.entity_metadata[24] = 0;
+	// lib_input.d_ptr
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = sizeof(double *);
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = ; // child 1 (double)
+    args.entity_metadata[i++] = 0;
 
-    args.entity_metadata[25] = 0;
-    args.entity_metadata[26] = sizeof(double);
-    args.entity_metadata[27] = 0;
+	// *(lib_input.d_ptr)
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(double);
+    args.entity_metadata[i++] = 0;
 
-    args.entity_metadata_size = 26;
+	// sub_input *
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = sizeof(struct sub_input *);
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = ;
+    args.entity_metadata[i++] = 0;
+
+	// struct sub_input
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(struct sub_input);
+    args.entity_metadata[i++] = 2;
+    args.entity_metadata[i++] = ; // child 1 s[10]
+    args.entity_metadata[i++] = offsetof(struct sub_input, s); // child 1 (int *) offset;
+    args.entity_metadata[i++] = ; // child 2 (float *)
+    args.entity_metadata[i++] = offsetof(struct sub_input, f_sub); // child 2 (double *) offset;
+
+	// sub_input.s
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(char[10]);
+    args.entity_metadata[i++] = 0;
+	
+	// sub_input.f_sub
+	args.entity_metadata[i++] = 1;
+	args.entity_metadata[i++] = sizeof(float *);
+	args.entity_metadata[i++] = 1;
+	args.entity_metadata[i++] = ;
+	args.entity_metadata[i++] = 0;
+
+	// float
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(float);
+    args.entity_metadata[i++] = 0;
+
+    args.entity_metadata_size = i;
  
     args.arg_entity_index[0] = 0;
 
