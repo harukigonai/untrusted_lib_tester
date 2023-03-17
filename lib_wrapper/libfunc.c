@@ -29,8 +29,14 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     printf("Addr of double %#lx\n", (uint64_t) x->d_ptr);
     printf("Addr of ptr to int %#lx\n", (uint64_t) &x->i_ptr);
     printf("Addr of int %#lx\n", (uint64_t) x->i_ptr);
+    printf("Addr of sub %#lx\n", (uint64_t) &x->sub);
+    printf("Value of sub_ptr %#lx\n", (uint64_t) x->sub_ptr);
+    printf("Value of sub.f_sub %#lx\n", (uint64_t) x->sub.f_sub);
+    printf("Addr of int %#lx\n", (uint64_t) x->i_ptr);
     printf("Addr of y %#lx\n", (uint64_t) &y);
     printf("Addr of z %#lx\n", (uint64_t) &z);
+    printf("Value of z.f_sub %#lx\n", (uint64_t) z.f_sub);
+    printf("Value of z.self %#lx\n", (uint64_t) z.self);
 
 
 	int i = 0;
