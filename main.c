@@ -1,16 +1,33 @@
 #include <stdio.h>
 #include "lib_input.h"
 
-int lib_func(struct lib_input *x);
+int lib_func(int w, struct lib_input *x, double y, struct sub_input z);
+
+float glob = 10.2;
 
 int main(void)
 {
-    struct lib_input x;
     int i = 1;
     double d = 1.1;
-    x.i_ptr = &i;
-    x.d_ptr = &d;
-    x.f = 1.2;
+	float sub_f = 6.0;
+
+    struct lib_input x = {
+		.sub_ptr = NULL,
+		.sub = {
+			.s = "test",
+			.f_sub = &sub_f,
+			.self = &x.sub
+		},
+		.f = 2.2,
+		.i_ptr = &i,
+		.d_ptr = &d,
+	};
+
+	struct sub_input z = {
+		.s = "hello!",
+		.f_sub = &glob,
+		.self = &z,
+	};
 
     //printf("Addr of ptr to struct %#lx\n");
     //printf("Addr of struct %#lx\n", &x);
@@ -19,7 +36,7 @@ int main(void)
     //printf("Addr of ptr to int %#lx\n", &x.i_ptr);
     //printf("Addr of int %#lx\n", &i);
 
-    lib_func(&x);
+    lib_func(13, &x, 101.5, z);
 
     return 0;
 }
