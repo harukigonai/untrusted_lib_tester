@@ -23,6 +23,7 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     populate_arg(args_addr, z);
     populate_ret(args_addr, ret);
 
+	/*
     printf("Addr of w %#lx\n", (uint64_t)&w);
     printf("Addr of ptr to struct %#lx\n", (uint64_t)&x);
     printf("Addr of struct %#lx\n", (uint64_t)x);
@@ -38,6 +39,29 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     printf("Addr of z %#lx\n", (uint64_t)&z);
     printf("Value of z.f_sub %#lx\n", (uint64_t)z.f_sub);
     printf("Value of z.self %#lx\n", (uint64_t)z.self);
+	printf("new_w: %d\n", w);
+	*/
+	printf("\n---\n\n");
+	printf("w: %d\n", w);
+	printf("x: %#lx\n"
+		   " \\_ i_ptr: %#lx\n"
+		   " |   \\_ *i_ptr: %d\n"
+		   " \\_ d_ptr: %#lx\n"
+		   " |   \\_ *d_ptr: %lf\n"
+		   " \\_ f: %f\n"
+		   " \\_ sub\n"
+		   " |   \\_ s: %s\n"
+		   " |   \\_ f_sub: %#lx\n"
+		   " |   \\_ self: %#lx\n"
+		   " \\_ sub_ptr: %#lx\n", x, x->i_ptr, *(x->i_ptr),
+		   x->d_ptr, *(x->d_ptr), x->f, x->sub.s,
+		   x->sub.f_sub, x->sub.self);
+	printf("y: %ld\n", y);
+	printf("z:\n"
+		   " \\_ s: %s\n"
+		   " \\_ f_sub: %#lx\n"
+		   " |   \\_ *f_sub: %f\n"
+		   " \\_ self: %#lx\n", z.s, z.f_sub, *(z.f_sub), z.self);
 
     int i = 0;
     // struct lib_input * [0]
@@ -120,6 +144,7 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
     args.entity_metadata[i++] = 0;
 
     args.entity_metadata_size = i;
+	printf("\n---\n\n");
     printf("We used %d slots in metadata\n", i);
 
     args.arg_entity_index[0] = 21;
@@ -135,40 +160,35 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 
     int num_args = new_args->num_args;
     assert(num_args == 4);
+
     int new_w = *((int *)new_args->args[0]);
     struct lib_input *new_x = *((struct lib_input **)new_args->args[1]);
     double new_y = *((double *)new_args->args[2]);
     struct sub_input new_z = *((struct sub_input *)new_args->args[3]);
 
-    int *new_i_ptr = new_x->i_ptr;
-    int new_i = *new_i_ptr;
-    double *new_d_ptr = new_x->d_ptr;
-    double new_d = *new_d_ptr;
-    float new_f = new_x->f;
-
-	printf("new_w: %d\n", w);
-	printf("new_x: %#lx\n", new_x);
-	printf(" \_ i_ptr: %#lx\n"
-		   "     \_ *i_ptr: %d\n"
-		   " \_ d_ptr: %#lx\n"
-		   "     \_ *d_ptr: %lf\n"
-		   " \_ f: %f\n"
-		   " \_ sub\n"
-		   "     \_ s: %s\n"
-		   "     \_ f_sub: %#lx\n"
-		   " \_ sub_ptr: %#lx\n", new_x->i_ptr, *(new_x->i_ptr),
+	printf("\n---\n\n");
+	printf("new_w: %d\n", new_w);
+	printf("new_x: %#lx\n"
+		   " \\_ i_ptr: %#lx\n"
+		   " |   \\_ *i_ptr: %d\n"
+		   " \\_ d_ptr: %#lx\n"
+		   " |   \\_ *d_ptr: %lf\n"
+		   " \\_ f: %f\n"
+		   " \\_ sub\n"
+		   " |   \\_ s: %s\n"
+		   " |   \\_ f_sub: %#lx\n"
+		   " |   \\_ self: %#lx\n"
+		   " \\_ sub_ptr: %#lx\n", new_x, new_x->i_ptr, *(new_x->i_ptr),
 		   new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
-		   new_x->sub.f_sub);
-    printf("New i_addr: %#lx\n", (uint64_t)new_x->i_ptr);
-    printf("New d addr: %#lx\n", (uint64_t)new_x->d_ptr);
+		   new_x->sub.f_sub, new_x->sub.self);
+	printf("new_y: %ld\n", new_y);
+	printf("new_z:\n"
+		   " \\_ s: %s\n"
+		   " \\_ f_sub: %#lx\n"
+		   " |   \\_ *f_sub: %f\n"
+		   " \\_ self: %#lx\n", new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
 
-    printf("new_i is %d\n", new_i);
-    printf("new_d is %f\n", new_d);
-    printf("new_f is %f\n", new_f);
-
-    while (1)
-    {
-    }
+	while (1);
 
     return ret;
 }
