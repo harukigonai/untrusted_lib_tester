@@ -94,25 +94,27 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 	// struct sub_input [37]
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(struct sub_input);
-    args.entity_metadata[i++] = 2;
+    args.entity_metadata[i++] = 3;
     args.entity_metadata[i++] = 44; // child 1 s[10]
     args.entity_metadata[i++] = offsetof(struct sub_input, s); // child 1 (int *) offset;
-    args.entity_metadata[i++] = 47; // child 2 (float *)
+    args.entity_metadata[i++] = 49; // child 2 (float *)
     args.entity_metadata[i++] = offsetof(struct sub_input, f_sub); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 32; // child 2 (float *)
+    args.entity_metadata[i++] = offsetof(struct sub_input, self); // child 2 (double *) offset;
 
-	// sub_input.s [44]
+	// sub_input.s [46]
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(char[10]);
     args.entity_metadata[i++] = 0;
 	
-	// sub_input.f_sub [47]
+	// sub_input.f_sub [49]
 	args.entity_metadata[i++] = 1;
 	args.entity_metadata[i++] = sizeof(float *);
 	args.entity_metadata[i++] = 1;
-	args.entity_metadata[i++] = 52;
+	args.entity_metadata[i++] = 54;
 	args.entity_metadata[i++] = 0;
 
-	// float [52]
+	// float [54]
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(float);
     args.entity_metadata[i++] = 0;
