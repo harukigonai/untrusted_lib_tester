@@ -7,6 +7,7 @@
 #include <dlfcn.h>
 #include <stdio.h>
 #include <sys/syscall.h>
+#include <sys/mman.h>
 #include <unistd.h>
 #include <string.h>
 
@@ -19,6 +20,12 @@ struct lib_output actual_lib_func(int w, struct lib_input *x, double y,
 
     struct lib_output out = {0};
     out.i = 100;
+    out.i_ptr = mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    *out.i_ptr = 1234;
+    out.d_ptr = mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    *out.d_ptr = 1234.5;
+    out.s_ptr = "a";
+    strcpy(out.s, "yeah");
     return out;
 }
 
@@ -166,6 +173,32 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.entity_metadata[i++] = sizeof(float);
     args.entity_metadata[i++] = 0;
 
+    // struct lib_output [57]
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(struct lib_output);
+    args.entity_metadata[i++] = 3;
+    args.entity_metadata[i++] = 16; // child 1 (int *) index
+    args.entity_metadata[i++] =
+        offsetof(struct lib_output, i_ptr); // child 1 (int *) offset;
+    args.entity_metadata[i++] = 24;        // child 2 (double *) index;
+    args.entity_metadata[i++] =
+        offsetof(struct lib_output, d_ptr); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 24;        // child 3 (double *) index;
+    args.entity_metadata[i++] =
+        offsetof(struct lib_output, s_ptr); // child 3 (double *) offset;
+
+    // char * [66]
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(char *);
+    args.entity_metadata[i++] = 1;
+    args.entity_metadata[i++] = 71; // child 1 (char) index
+    args.entity_metadata[i++] = 0;  // child 1 (char) offset
+
+    // char [71]
+    args.entity_metadata[i++] = 0;
+    args.entity_metadata[i++] = sizeof(char);
+    args.entity_metadata[i++] = 0;
+
     args.entity_metadata_size = i;
     printf("\n---\n\n");
     printf("We used %d slots in metadata\n", i);
@@ -174,6 +207,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.arg_entity_index[1] = 0;
     args.arg_entity_index[2] = 29;
     args.arg_entity_index[3] = 37;
+    args.ret_entity_index = 57;
 
     printf("Old i_addr: %#lx\n", (uint64_t)x->i_ptr);
     printf("Old d_addr: %#lx\n", (uint64_t)x->d_ptr);
@@ -244,8 +278,17 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *f_sub: %f\n"
            " \\_ self: %#lx\n",
            new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
-    printf("new addr of ret: %#lx\n", new_ret_ptr);
-
+    printf("new_ret: %#lx\n"
+           " \\_ i: %d\n"
+           " \\_ i_ptr: %#lx\n"
+           " |   \\_ *i_ptr: %d\n"
+           " \\_ d_ptr: %#lx\n"
+           " |   \\_ *d_ptr: %lf\n"
+           " \\_ s_ptr: %s\n"
+           " \\_ s: %s\n",
+           new_ret_ptr, new_ret_ptr->i, new_ret_ptr->i_ptr,
+           *new_ret_ptr->i_ptr, new_ret_ptr->d_ptr, *new_ret_ptr->d_ptr,
+           new_ret_ptr->s_ptr, new_ret_ptr->s);
     // Copies contents of new_args->ret into args_addr.ret
     syscall(889);
 
@@ -274,6 +317,16 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " \\_ self: %#lx\n",
            z.s, z.f_sub, *(z.f_sub), z.self);
     printf("addr of ret: %#lx\n", &ret);
+    printf("ret: %#lx\n"
+           " \\_ i: %d\n"
+           " \\_ i_ptr: %#lx\n"
+           " |   \\_ *i_ptr: %d\n"
+           " \\_ d_ptr: %#lx\n"
+           " |   \\_ *d_ptr: %lf\n"
+           " \\_ s_ptr: %s\n"
+           " \\_ s: %s\n",
+           &ret, ret.i, ret.i_ptr, *ret.i_ptr, ret.d_ptr, *ret.d_ptr,
+           ret.s_ptr, ret.s);
 
     return ret;
 }

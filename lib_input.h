@@ -16,4 +16,6 @@ struct lib_output {
 	int i;
 	int *i_ptr;
 	double *d_ptr;
+	char *s_ptr;
+	char s[10];
 };
