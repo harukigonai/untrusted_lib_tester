@@ -71,6 +71,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *f_sub: %f\n"
            " \\_ self: %#lx\n",
            z.s, z.f_sub, *(z.f_sub), z.self);
+    printf("addr of ret: %#lx\n", &ret);
 
     int i = 0;
     // struct lib_input * [0]
@@ -210,9 +211,12 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *f_sub: %f\n"
            " \\_ self: %#lx\n",
            new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
+    printf("new addr of ret: %#lx\n", new_ret_ptr);
 
     // Copies contents of new_args->ret into args_addr.ret
     syscall(889);
+
+    printf("We exited 889. ret.i is %d\n", ret.i);
 
     return ret;
 }
