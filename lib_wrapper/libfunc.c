@@ -183,9 +183,9 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.entity_metadata[i++] = 24;        // child 2 (double *) index;
     args.entity_metadata[i++] =
         offsetof(struct lib_output, d_ptr); // child 2 (double *) offset;
-    args.entity_metadata[i++] = 24;        // child 3 (double *) index;
+    args.entity_metadata[i++] = 66;        // child 3 (char *) index;
     args.entity_metadata[i++] =
-        offsetof(struct lib_output, s_ptr); // child 3 (double *) offset;
+        offsetof(struct lib_output, s_ptr); // child 3 (char *) offset;
 
     // char * [66]
     args.entity_metadata[i++] = 0;
@@ -316,7 +316,6 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *f_sub: %f\n"
            " \\_ self: %#lx\n",
            z.s, z.f_sub, *(z.f_sub), z.self);
-    printf("addr of ret: %#lx\n", &ret);
     printf("ret: %#lx\n"
            " \\_ i: %d\n"
            " \\_ i_ptr: %#lx\n"

@@ -38,5 +38,7 @@ int main(void)
 
     lib_func(13, &x, 101.5, z);
 
+    printf("We returned from main\n");
+
     return 0;
 }
