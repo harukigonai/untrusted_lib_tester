@@ -11,3 +11,9 @@ struct lib_input {
 	struct sub_input sub; /* we need to handle substructs :/ */
 	struct sub_input *sub_ptr;
 };
+
+struct lib_output {
+	int i;
+	int *i_ptr;
+	double *d_ptr;
+};
