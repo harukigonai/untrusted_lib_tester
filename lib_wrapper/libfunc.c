@@ -8,9 +8,15 @@
 #include <stdio.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <string.h>
 
 struct lib_output actual_lib_func(int w, struct lib_input *x, double y,
                                   struct sub_input z) {
+    *x->i_ptr = 1000;
+    *x->d_ptr = 1100.0;
+    x->f = 2200.0;
+    strcpy(x->sub.s, "test 2");
+
     struct lib_output out = {0};
     out.i = 100;
     return out;
@@ -186,7 +192,34 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     // Note that the ret val type is struct lib_output
     struct lib_output *new_ret_ptr = ((struct lib_output *)new_args->ret);
 
+    printf("\n---\n\n");
+    printf("new_w: %d\n", new_w);
+    printf("new_x: %#lx\n"
+           " \\_ i_ptr: %#lx\n"
+           " |   \\_ *i_ptr: %d\n"
+           " \\_ d_ptr: %#lx\n"
+           " |   \\_ *d_ptr: %lf\n"
+           " \\_ f: %f\n"
+           " \\_ sub\n"
+           " |   \\_ s: %s\n"
+           " |   \\_ f_sub: %#lx\n"
+           " |   \\_ self: %#lx\n"
+           " \\_ sub_ptr: %#lx\n",
+           new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr),
+           new_x->f, new_x->sub.s, new_x->sub.f_sub, new_x->sub.self,
+           new_x->sub_ptr);
+    printf("new_y: %ld\n", new_y);
+    printf("new_z:\n"
+           " \\_ s: %s\n"
+           " \\_ f_sub: %#lx\n"
+           " |   \\_ *f_sub: %f\n"
+           " \\_ self: %#lx\n",
+           new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
+    printf("new addr of ret: %#lx\n", new_ret_ptr);
+
     *new_ret_ptr = actual_lib_func(new_w, new_x, new_y, new_z);
+
+    printf("actual_lib_func is updating some of the stuff...\n\n");
 
     printf("\n---\n\n");
     printf("new_w: %d\n", new_w);
@@ -216,7 +249,31 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     // Copies contents of new_args->ret into args_addr.ret
     syscall(889);
 
-    printf("We exited 889. ret.i is %d\n", ret.i);
+    printf("We exited 889. ret.i is %d\n\n", ret.i);
+
+    printf("\n---\n\n");
+    printf("w: %d\n", w);
+    printf("x: %#lx\n"
+           " \\_ i_ptr: %#lx\n"
+           " |   \\_ *i_ptr: %d\n"
+           " \\_ d_ptr: %#lx\n"
+           " |   \\_ *d_ptr: %lf\n"
+           " \\_ f: %f\n"
+           " \\_ sub\n"
+           " |   \\_ s: %s\n"
+           " |   \\_ f_sub: %#lx\n"
+           " |   \\_ self: %#lx\n"
+           " \\_ sub_ptr: %#lx\n",
+           x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s,
+           x->sub.f_sub, x->sub.self, x->sub_ptr);
+    printf("y: %ld\n", y);
+    printf("z:\n"
+           " \\_ s: %s\n"
+           " \\_ f_sub: %#lx\n"
+           " |   \\_ *f_sub: %f\n"
+           " \\_ self: %#lx\n",
+           z.s, z.f_sub, *(z.f_sub), z.self);
+    printf("addr of ret: %#lx\n", &ret);
 
     return ret;
 }
