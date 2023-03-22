@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "lib_input.h"
 
-int lib_func(int w, struct lib_input *x, double y, struct sub_input z);
+struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_input z);
 
 float glob = 10.2;
 
