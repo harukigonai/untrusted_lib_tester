@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -Wall
-LDLIBS = /root/untrusted_lib_tester/lib_wrapper/libfunc.so
+LDLIBS = ./lib_wrapper/libfunc.so
 
 .PHONY: all
 all: clean libfunc main init_2
