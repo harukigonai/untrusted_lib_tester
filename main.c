@@ -16,7 +16,8 @@ int main(void)
 		.sub = {
 			.s = "test",
 			.f_sub = &sub_f,
-			.self = &x.sub
+			.self = &x.sub,
+			.q = 420
 		},
 		.f = 2.2,
 		.i_ptr = &i,
@@ -27,6 +28,7 @@ int main(void)
 		.s = "hello!",
 		.f_sub = &glob,
 		.self = &z,
+		.q = 69
 	};
 
     //printf("Addr of ptr to struct %#lx\n");

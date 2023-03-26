@@ -53,15 +53,19 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 		   " |   \\_ s: %s\n"
 		   " |   \\_ f_sub: %#lx\n"
 		   " |   \\_ self: %#lx\n"
+		   " |   \\_ q: %d\n"
 		   " \\_ sub_ptr: %#lx\n", x, x->i_ptr, *(x->i_ptr),
 		   x->d_ptr, *(x->d_ptr), x->f, x->sub.s,
-		   x->sub.f_sub, x->sub.self, x->sub_ptr);
+		   x->sub.f_sub,  x->sub.self, x->sub.q, x->sub_ptr);
 	printf("y: %ld\n", y);
 	printf("z:\n"
 		   " \\_ s: %s\n"
 		   " \\_ f_sub: %#lx\n"
 		   " |   \\_ *f_sub: %f\n"
-		   " \\_ self: %#lx\n", z.s, z.f_sub, *(z.f_sub), z.self);
+		   " \\_ self: %#lx\n"
+		   " \\_ q: %d\n",
+		   z.s, z.f_sub, *(z.f_sub), z.self, z.q);
+
 
     int i = 0;
     // struct lib_input * [0]
@@ -178,15 +182,18 @@ int lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 		   " |   \\_ s: %s\n"
 		   " |   \\_ f_sub: %#lx\n"
 		   " |   \\_ self: %#lx\n"
+		   " |   \\_ q: %d\n"
 		   " \\_ sub_ptr: %#lx\n", new_x, new_x->i_ptr, *(new_x->i_ptr),
 		   new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
-		   new_x->sub.f_sub, new_x->sub.self, new_x->sub_ptr);
+		   new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr);
 	printf("new_y: %ld\n", new_y);
 	printf("new_z:\n"
 		   " \\_ s: %s\n"
 		   " \\_ f_sub: %#lx\n"
 		   " |   \\_ *f_sub: %f\n"
-		   " \\_ self: %#lx\n", new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
+		   " \\_ self: %#lx\n"
+		   " \\_ q: %d\n",
+		   new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self, new_z.q);
 
 	while (1);
 
