@@ -6,13 +6,13 @@
 #include <assert.h>
 #include <dlfcn.h>
 #include <stdio.h>
-#include <sys/syscall.h>
-#include <sys/mman.h>
-#include <unistd.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
-struct lib_output actual_lib_func(int w, struct lib_input *x, double y,
-                                  struct sub_input z) {
+struct lib_output actual_lib_func(int w, struct lib_input *x, double y, struct sub_input z)
+{
     *x->i_ptr = 1000;
     *x->d_ptr = 1100.0;
     x->f = 2200.0;
@@ -20,9 +20,9 @@ struct lib_output actual_lib_func(int w, struct lib_input *x, double y,
 
     struct lib_output out = {0};
     out.i = 100;
-    out.i_ptr = mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    out.i_ptr = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     *out.i_ptr = 1234;
-    out.d_ptr = mmap(0, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    out.d_ptr = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     *out.d_ptr = 1234.5;
     out.s_ptr = "a";
     strcpy(out.s, "yeah");
@@ -30,8 +30,8 @@ struct lib_output actual_lib_func(int w, struct lib_input *x, double y,
 }
 
 /* Pretend this is the wrapper */
-struct lib_output lib_func(int w, struct lib_input *x, double y,
-                           struct sub_input z) {
+struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_input z)
+{
     printf("entering lib_func\n");
 
     struct lib_output ret;
@@ -74,16 +74,17 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ s: %s\n"
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
+           " |   \\_ q: %d\n"
            " \\_ sub_ptr: %#lx\n",
-           x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s,
-           x->sub.f_sub, x->sub.self, x->sub_ptr);
+           x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s, x->sub.f_sub, x->sub.self, x->sub.q,
+           x->sub_ptr);
     printf("y: %ld\n", y);
     printf("z:\n"
            " \\_ s: %s\n"
            " \\_ f_sub: %#lx\n"
            " |   \\_ *f_sub: %f\n"
-           " \\_ self: %#lx\n",
-           z.s, z.f_sub, *(z.f_sub), z.self);
+           " \\_ self: %#lx\n"
+           " \\_ q: %d\n", z.s, z.f_sub, *(z.f_sub), z.self, z.q);
     printf("addr of ret: %#lx\n", &ret);
 
     int i = 0;
@@ -98,18 +99,14 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(struct lib_input);
     args.entity_metadata[i++] = 4;
-    args.entity_metadata[i++] = 16; // child 1 (int *) index
-    args.entity_metadata[i++] =
-        offsetof(struct lib_input, i_ptr); // child 1 (int *) offset;
-    args.entity_metadata[i++] = 24;        // child 2 (double *) index;
-    args.entity_metadata[i++] =
-        offsetof(struct lib_input, d_ptr); // child 2 (double *) offset;
-    args.entity_metadata[i++] = 37;        // child 4 (struct sub_input) index;
-    args.entity_metadata[i++] =
-        offsetof(struct lib_input, sub); // child 2 (double *) offset;
-    args.entity_metadata[i++] = 32;      // child 5 (struct sub_input *) index;
-    args.entity_metadata[i++] =
-        offsetof(struct lib_input, sub_ptr); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 16;                                  // child 1 (int *) index
+    args.entity_metadata[i++] = offsetof(struct lib_input, i_ptr);   // child 1 (int *) offset;
+    args.entity_metadata[i++] = 24;                                  // child 2 (double *) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, d_ptr);   // child 2 (double *) offset;
+    args.entity_metadata[i++] = 37;                                  // child 4 (struct sub_input) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, sub);     // child 2 (double *) offset;
+    args.entity_metadata[i++] = 32;                                  // child 5 (struct sub_input *) index;
+    args.entity_metadata[i++] = offsetof(struct lib_input, sub_ptr); // child 2 (double *) offset;
 
     // lib_input.i_ptr (int *) [16]
     args.entity_metadata[i++] = 1;
@@ -146,15 +143,12 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(struct sub_input);
     args.entity_metadata[i++] = 3;
-    args.entity_metadata[i++] = 44; // child 1 s[10]
-    args.entity_metadata[i++] =
-        offsetof(struct sub_input, s); // child 1 (int *) offset;
-    args.entity_metadata[i++] = 49;    // child 2 (float *)
-    args.entity_metadata[i++] =
-        offsetof(struct sub_input, f_sub); // child 2 (double *) offset;
-    args.entity_metadata[i++] = 32;        // child 2 (float *)
-    args.entity_metadata[i++] =
-        offsetof(struct sub_input, self); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 44;                                // child 1 s[10]
+    args.entity_metadata[i++] = offsetof(struct sub_input, s);     // child 1 (int *) offset;
+    args.entity_metadata[i++] = 49;                                // child 2 (float *)
+    args.entity_metadata[i++] = offsetof(struct sub_input, f_sub); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 32;                                // child 2 (float *)
+    args.entity_metadata[i++] = offsetof(struct sub_input, self);  // child 2 (double *) offset;
 
     // sub_input.s [46]
     args.entity_metadata[i++] = 0;
@@ -177,15 +171,12 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(struct lib_output);
     args.entity_metadata[i++] = 3;
-    args.entity_metadata[i++] = 16; // child 1 (int *) index
-    args.entity_metadata[i++] =
-        offsetof(struct lib_output, i_ptr); // child 1 (int *) offset;
-    args.entity_metadata[i++] = 24;        // child 2 (double *) index;
-    args.entity_metadata[i++] =
-        offsetof(struct lib_output, d_ptr); // child 2 (double *) offset;
-    args.entity_metadata[i++] = 66;        // child 3 (char *) index;
-    args.entity_metadata[i++] =
-        offsetof(struct lib_output, s_ptr); // child 3 (char *) offset;
+    args.entity_metadata[i++] = 16;                                 // child 1 (int *) index
+    args.entity_metadata[i++] = offsetof(struct lib_output, i_ptr); // child 1 (int *) offset;
+    args.entity_metadata[i++] = 24;                                 // child 2 (double *) index;
+    args.entity_metadata[i++] = offsetof(struct lib_output, d_ptr); // child 2 (double *) offset;
+    args.entity_metadata[i++] = 66;                                 // child 3 (char *) index;
+    args.entity_metadata[i++] = offsetof(struct lib_output, s_ptr); // child 3 (char *) offset;
 
     // char * [66]
     args.entity_metadata[i++] = 0;
@@ -238,17 +229,17 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ s: %s\n"
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
+           " |   \\_ q: %d\n"
            " \\_ sub_ptr: %#lx\n",
-           new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr),
-           new_x->f, new_x->sub.s, new_x->sub.f_sub, new_x->sub.self,
-           new_x->sub_ptr);
+           new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
+           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr);
     printf("new_y: %ld\n", new_y);
     printf("new_z:\n"
            " \\_ s: %s\n"
            " \\_ f_sub: %#lx\n"
            " |   \\_ *f_sub: %f\n"
            " \\_ self: %#lx\n",
-           new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
+           " \\_ q: %d\n", new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self, new_z.q);
     printf("new addr of ret: %#lx\n", new_ret_ptr);
 
     *new_ret_ptr = actual_lib_func(new_w, new_x, new_y, new_z);
@@ -267,17 +258,18 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ s: %s\n"
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
+           " |   \\_ q: %d\n"
            " \\_ sub_ptr: %#lx\n",
-           new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr),
-           new_x->f, new_x->sub.s, new_x->sub.f_sub, new_x->sub.self,
-           new_x->sub_ptr);
+           new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
+           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr);
     printf("new_y: %ld\n", new_y);
     printf("new_z:\n"
            " \\_ s: %s\n"
            " \\_ f_sub: %#lx\n"
            " |   \\_ *f_sub: %f\n"
-           " \\_ self: %#lx\n",
-           new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self);
+           " \\_ self: %#lx\n"
+           " \\_ q: %d\n",
+           new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self, new_z.q);
     printf("new_ret: %#lx\n"
            " \\_ i: %d\n"
            " \\_ i_ptr: %#lx\n"
@@ -286,9 +278,8 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *d_ptr: %lf\n"
            " \\_ s_ptr: %s\n"
            " \\_ s: %s\n",
-           new_ret_ptr, new_ret_ptr->i, new_ret_ptr->i_ptr,
-           *new_ret_ptr->i_ptr, new_ret_ptr->d_ptr, *new_ret_ptr->d_ptr,
-           new_ret_ptr->s_ptr, new_ret_ptr->s);
+           new_ret_ptr, new_ret_ptr->i, new_ret_ptr->i_ptr, *new_ret_ptr->i_ptr, new_ret_ptr->d_ptr,
+           *new_ret_ptr->d_ptr, new_ret_ptr->s_ptr, new_ret_ptr->s);
     // Copies contents of new_args->ret into args_addr.ret
     syscall(889);
 
@@ -306,16 +297,17 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ s: %s\n"
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
+           " |   \\_ q: %d\n"
            " \\_ sub_ptr: %#lx\n",
-           x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s,
-           x->sub.f_sub, x->sub.self, x->sub_ptr);
+           x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s, x->sub.f_sub, x->sub.self, x->sub.q,
+           x->sub_ptr);
     printf("y: %ld\n", y);
     printf("z:\n"
            " \\_ s: %s\n"
            " \\_ f_sub: %#lx\n"
            " |   \\_ *f_sub: %f\n"
-           " \\_ self: %#lx\n",
-           z.s, z.f_sub, *(z.f_sub), z.self);
+           " \\_ self: %#lx\n"
+           " \\_ q: %d\n", z.s, z.f_sub, *(z.f_sub), z.self, z.q);
     printf("ret: %#lx\n"
            " \\_ i: %d\n"
            " \\_ i_ptr: %#lx\n"
@@ -324,8 +316,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y,
            " |   \\_ *d_ptr: %lf\n"
            " \\_ s_ptr: %s\n"
            " \\_ s: %s\n",
-           &ret, ret.i, ret.i_ptr, *ret.i_ptr, ret.d_ptr, *ret.d_ptr,
-           ret.s_ptr, ret.s);
+           &ret, ret.i, ret.i_ptr, *ret.i_ptr, ret.d_ptr, *ret.d_ptr, ret.s_ptr, ret.s);
 
     return ret;
 }
