@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "lib_input.h"
 
-int lib_func(int w, struct lib_input *x, double y, struct sub_input z);
+struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_input z);
 
 float glob = 10.2;
 
@@ -39,6 +39,8 @@ int main(void)
     //printf("Addr of int %#lx\n", &i);
 
     lib_func(13, &x, 101.5, z);
+
+    printf("We returned from main\n");
 
     return 0;
 }
