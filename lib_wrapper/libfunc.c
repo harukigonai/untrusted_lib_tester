@@ -11,6 +11,8 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+const char *some_string = "hope this works";
+
 struct lib_output actual_lib_func(int w, struct lib_input *x, double y, struct sub_input z)
 {
     *x->i_ptr = 1000;
@@ -24,7 +26,7 @@ struct lib_output actual_lib_func(int w, struct lib_input *x, double y, struct s
     *out.i_ptr = 1234;
     out.d_ptr = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     *out.d_ptr = 1234.5;
-    out.s_ptr = "a";
+    out.s_ptr = some_string;
     strcpy(out.s, "yeah");
     return out;
 }
@@ -184,7 +186,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(char *);
     args.entity_metadata[i++] = 1;
-    args.entity_metadata[i++] = 73; // child 1 (char) index
+    args.entity_metadata[i++] = 4096; // child 1 (char) index
     args.entity_metadata[i++] = 0;  // child 1 (char) offset
 
     // char [73]

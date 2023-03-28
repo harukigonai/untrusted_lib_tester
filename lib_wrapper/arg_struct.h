@@ -25,7 +25,7 @@ struct lib_enter_args {
     void *ret;
     int ret_entity_index;
 
-    uint64_t entity_metadata[500];
+    uint64_t entity_metadata[4096];
     size_t entity_metadata_size;
 };
 
