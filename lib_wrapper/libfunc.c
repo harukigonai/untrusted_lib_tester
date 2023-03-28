@@ -240,7 +240,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
            " \\_ s: %s\n"
            " \\_ f_sub: %#lx\n"
            " |   \\_ *f_sub: %f\n"
-           " \\_ self: %#lx\n",
+           " \\_ self: %#lx\n"
            " \\_ q: %d\n", new_z.s, new_z.f_sub, *(new_z.f_sub), new_z.self, new_z.q);
     printf("new addr of ret: %#lx\n", new_ret_ptr);
 
