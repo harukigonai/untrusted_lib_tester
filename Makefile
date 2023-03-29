@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g -Wall
-LDLIBS = ./lib_wrapper/libfunc.so
+LDLIBS = /opt/openssl/lib/libcrypto.so.1.0.0 /opt/openssl/lib/libssl.so.1.0.0
 
 .PHONY: all
-all: clean libfunc main init_2
+all: clean main init_2
 
 .PHONY: clean
 clean:
@@ -20,5 +20,3 @@ main: main.o
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS) $(LDLIBS)
 
-libfunc:
-	cd lib_wrapper && $(MAKE) all
