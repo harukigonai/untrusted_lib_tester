@@ -3,6 +3,6 @@
 
 int main(void)
 {
-    SSL_load_error_strings();
+    real_func_1();
     return 0;
 }

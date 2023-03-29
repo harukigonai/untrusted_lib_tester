@@ -15,7 +15,7 @@ int main(void) {
 
 	char *argv[] = { "/root/untrusted_lib_tester/main", 0 };
 	char *envp[] = {
-		"LD_PRELOAD=/root/extract_ptr_info/hardcoded_wrappers_temp/wrapper_library/libssl_wrapper.so",
+		"LD_PRELOAD=./lib_wrapper_2/libfunc_wrapper.so",
 		"LD_LIBRARY_PATH=/opt/openssl/lib",
 		0
 	};
