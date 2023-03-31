@@ -2,6 +2,8 @@ struct sub_input {
 	char s[10];
 	float *f_sub;
 	struct sub_input *self;
+	char padding[4096]; // Page off just for checking, don't copy this
+	int q;
 };
 
 struct lib_input {
@@ -10,6 +12,7 @@ struct lib_input {
     float f;
 	struct sub_input sub; /* we need to handle substructs :/ */
 	struct sub_input *sub_ptr;
+	int (*func_ptr)(double, int *);
 };
 
 struct lib_output {
