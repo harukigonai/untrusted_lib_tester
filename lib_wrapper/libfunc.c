@@ -101,7 +101,7 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
     // struct lib_input [5]
     args.entity_metadata[i++] = 0;
     args.entity_metadata[i++] = sizeof(struct lib_input);
-    args.entity_metadata[i++] = 4;
+    args.entity_metadata[i++] = 5;
     args.entity_metadata[i++] = 18;                                  // child 1 (int *) index
     args.entity_metadata[i++] = offsetof(struct lib_input, i_ptr);
     args.entity_metadata[i++] = 26;                                  // child 2 (double *) index;
