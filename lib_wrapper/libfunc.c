@@ -28,6 +28,9 @@ struct lib_output actual_lib_func(int w, struct lib_input *x, double y, struct s
     *out.d_ptr = 1234.5;
     out.s_ptr = some_string;
     strcpy(out.s, "yeah");
+
+	printf("we got return from func_ptr: %d\n", x->func_ptr(y, x->i_ptr));
+
     return out;
 }
 
