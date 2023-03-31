@@ -77,9 +77,10 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
            " |   \\_ q: %d\n"
-           " \\_ sub_ptr: %#lx\n",
+           " \\_ sub_ptr: %#lx\n"
+           " \\_ func_ptr: %#lx\n",
            x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s, x->sub.f_sub, x->sub.self, x->sub.q,
-           x->sub_ptr);
+           x->sub_ptr, x->func_ptr);
     printf("y: %ld\n", y);
     printf("z:\n"
            " \\_ s: %s\n"
@@ -234,9 +235,10 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
            " |   \\_ q: %d\n"
-           " \\_ sub_ptr: %#lx\n",
+           " \\_ sub_ptr: %#lx\n"
+           " \\_ func_ptr: %#lx\n",
            new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
-           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr);
+           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr, new_x->func_ptr);
     printf("new_y: %ld\n", new_y);
     printf("new_z:\n"
            " \\_ s: %s\n"
@@ -263,9 +265,10 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
            " |   \\_ q: %d\n"
-           " \\_ sub_ptr: %#lx\n",
+           " \\_ sub_ptr: %#lx\n"
+           " \\_ func_ptr: %#lx\n",
            new_x, new_x->i_ptr, *(new_x->i_ptr), new_x->d_ptr, *(new_x->d_ptr), new_x->f, new_x->sub.s,
-           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr);
+           new_x->sub.f_sub, new_x->sub.self, new_x->sub.q, new_x->sub_ptr, new_x->func_ptr);
     printf("new_y: %ld\n", new_y);
     printf("new_z:\n"
            " \\_ s: %s\n"
@@ -302,9 +305,10 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
            " |   \\_ f_sub: %#lx\n"
            " |   \\_ self: %#lx\n"
            " |   \\_ q: %d\n"
-           " \\_ sub_ptr: %#lx\n",
+           " \\_ sub_ptr: %#lx\n"
+           " \\_ func_ptr: %#lx\n",
            x, x->i_ptr, *(x->i_ptr), x->d_ptr, *(x->d_ptr), x->f, x->sub.s, x->sub.f_sub, x->sub.self, x->sub.q,
-           x->sub_ptr);
+           x->sub_ptr, x->func_ptr);
     printf("y: %ld\n", y);
     printf("z:\n"
            " \\_ s: %s\n"

@@ -5,6 +5,11 @@ struct lib_output lib_func(int w, struct lib_input *x, double y, struct sub_inpu
 
 float glob = 10.2;
 
+int myfunc(double x, int *y) {
+	printf("Wow! %lf, %d\n", x, *y);
+	return 69;
+}
+
 int main(void)
 {
     int i = 1;
@@ -22,6 +27,7 @@ int main(void)
 		.f = 2.2,
 		.i_ptr = &i,
 		.d_ptr = &d,
+		.func_ptr = myfunc
 	};
 
 	struct sub_input z = {
