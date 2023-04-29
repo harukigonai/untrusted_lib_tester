@@ -1,7 +1,7 @@
-CC = gcc
-CFLAGS = -g -Wall -fPIC
+CC=clang
+CFLAGS=-g -gdwarf-4 -Wall -fPIC -funwind-tables
 LDFLAGS = -g -shared
-LDLIBS = -ldl
+LDLIBS=-L/usr/local/lib -lunwind-aarch64 -lunwind -ldl
 
 .PHONY: all
 all: clean libfunc.so
@@ -10,10 +10,18 @@ all: clean libfunc.so
 clean:
 	rm -f *.o *.so *~
 
-%.so:
-	$(LINK.c) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+wrapper.so: unwind_and_find_var_addrs.o malloc_2.o libfunc.o
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
-libfunc.so: libfunc.o
+unwind_and_find_var_addrs.o: unwind_and_find_var_addrs.c unwind_and_find_var_addrs.h
+
+malloc_2.o: malloc_2.c malloc_2.h
 
 libfunc.o: libfunc.c
 
+.PHONY: all
+all: clean wrapper.so
+
+.PHONY: clean
+clean:
+	rm -f *.so *.o
